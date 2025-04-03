@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 Use App\Models\Post;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 
 class PostController extends Controller
@@ -31,8 +32,9 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request);
         $post = new Post();
+        $image = $request->file('photo');    
+        Storage::disk('public')->put("$request->title", $image);
         $post->user_id = Auth::id();
         $post->title = $request->title;
         $post->description = $request->description;
