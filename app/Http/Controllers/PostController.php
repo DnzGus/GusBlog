@@ -33,22 +33,26 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $post = new Post();
-        $image = $request->file('photo');    
-        Storage::disk('public')->put("$request->title", $image);
+        
         $post->user_id = Auth::id();
         $post->title = $request->title;
         $post->description = $request->description;
         $post->save();
-
-        return redirect('/');
+        
+        $request->photo->storeAs('photos', $post->id.'.jpg', 'public');
+        
+        return redirect('/post/'.$post->id);
     }
 
     /**
      * Display the specified resource.
      */
     public function show(string $id)
-    {
-        //
+    {   
+        $post = Post::find($id);
+        $url = Storage::url($post->id.'.jpg');
+        // dd($url);
+        return view('post.postShow', compact('post','url'));
     }
 
     /**
